@@ -18,12 +18,14 @@ Since you guys currently build React apps, you may be able to skip several steps
 3) Open the project called "Worksmith" with a code/text editor (I used Visual Studio Code to write it)
 4) Open a new terminal
 5) cd to the Worksmith directory, if not already there
-6) Run the following command to install node_modules (only if you went with Option 1 in Step 2, which doesnt inlude the node_modules)
+6) Run the following command to install node_modules (only if you went with Option 1 in Step 2, which doesnt inlude the node_modules) <br>
     npm install
-5) Run the following command
+5) Run the following command <br>
     npm install -g serve
-6) Then run this command, to start the app up 
+6) Run the following command to build the app (only if you went with Option 1 in Step 2, as this solution hasnt been built yet) <br>
+    npm run build
+7) Then run this command, to start the app up <br>
     serve -s build
-7) The app should now be running on your localhost on port 5000
+8) The app should now be running on your localhost on port 5000 <br>
     http://localhost:5000/
 

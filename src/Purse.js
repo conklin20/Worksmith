@@ -1,10 +1,11 @@
 import React from 'react';
 
 //stateless functional component
-const Purse = props => {
+const Purse = ({name, denomination, onDelete}) => {
   return (
     <li>
-        {props.name}: {props.denomination}
+        {name}: {denomination}
+        <strong><span title="Delete coin from purse" onClick={onDelete}> X </span></strong>
     </li>
   );
 }

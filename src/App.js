@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
 import Change from './Change'
+import PurseForm from './PurseForm'
 import Purse from './Purse';
+import './App.css';
 
 class App extends Component {
   constructor(props){
@@ -44,11 +45,13 @@ class App extends Component {
             coinName: "Pennies",
             numCoins: 0
           }
-        ]  
+        ], 
+        message: ""
       }
 
-      //doing this so our handleSubmit function using the correct reference of 'this'
+      //need this so our event handler methods use the correct reference of 'this'
       this.handleSubmit = this.handleSubmit.bind(this); 
+      this.addNewCoin = this.addNewCoin.bind(this); 
   }
 
   handleSubmit(e){
@@ -88,9 +91,27 @@ class App extends Component {
       
       return change; 
     })
+
+    //checking to see if we were able to provide exact change 
+    const message = changeToMake > 0 ? `We were not able to provide exact change, remaining change ${Number(changeToMake).toFixed(2)}` : ""
     
     //setState, which will invoke render() 
-    this.setState({purse: sortedPurse, change: change})
+    this.setState({purse: sortedPurse, change: change, message: message}) //could destructure here, but being explicit
+  }
+
+  addNewCoin(newCoin){
+    //tiny bit of validation, to ensure a coin with this value is not already in our purse
+    //using the 'some' method to check if the denomination of the new coin already exists   
+    if(!this.state.purse.some(c => c.denomination === newCoin.denomination)) {
+      //adding the new coin, recieved from the PurseForm, to the purse state 
+      this.setState({purse: [...this.state.purse, newCoin]}); 
+    }
+  }
+
+  deleteCoin(coin){
+    //using filter to remove this coin from  the array 
+    const purse = this.state.purse.filter(c => c.denomination !== coin.denomination); 
+    this.setState({purse})
   }
 
   render() {
@@ -108,13 +129,14 @@ class App extends Component {
     //build out the list of coins we have availble 
     const purse = this.state.purse.map((c, i) => (
       <Purse 
-        key={i}
-        name={c.coinName}
-        denomination={c.denomination.toFixed(2)}
+      key={i}
+      name={c.coinName}
+      denomination={Number(c.denomination).toFixed(2)}
+      onDelete={this.deleteCoin.bind(this, c)}
       >
       </Purse>
-    ));   
-    
+    )); 
+  
     return (
       <div className="App">
         <div>
@@ -128,7 +150,7 @@ class App extends Component {
                 value={changeToMake}
                 min="0"
                 step="0.01"
-                onChange={(e) => this.setState({[e.target.name]: Number(e.target.value).toFixed(2)})}
+                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
               />
               <button
                 type="submit"
@@ -138,13 +160,17 @@ class App extends Component {
             </form>
         </div>
         <div>
-          <h3>Your change due is: ${changeToMake}</h3>
+          <h3>Your change due is: ${Number(changeToMake).toFixed(2)}</h3>
+          <span>{this.state.message}</span>
           <ul>
             {change}
           </ul>
         </div>
         <div>
-          <h3>Available coins</h3>
+          <PurseForm addNewCoin={this.addNewCoin} />
+        </div>
+        <div>
+          <h4>Coins in Purse</h4>
           <ul>
             {purse}
           </ul>
